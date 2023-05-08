@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.strangenaut.boosterfileexplorer.R
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.FileOrder
-import com.strangenaut.boosterfileexplorer.feature_filereader.presentation.fileslist.components.FileListItem
+import com.strangenaut.boosterfileexplorer.feature_filereader.presentation.fileslist.components.FileItemSection
 import com.strangenaut.boosterfileexplorer.feature_filereader.presentation.fileslist.components.OrderSection
 import java.io.File
 
@@ -128,7 +128,7 @@ fun FilesListScreen(
                 items(state.nestedFiles.size) { number ->
                     val fileItem = state.nestedFiles[number]
 
-                    FileListItem(
+                    FileItemSection(
                         fileItem = fileItem,
                         onClick = {
                             onOpenFile(fileItem.path)

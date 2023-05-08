@@ -18,7 +18,7 @@ import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileI
 import com.strangenaut.boosterfileexplorer.R
 
 @Composable
-fun FileListItem(
+fun FileItemSection(
     fileItem: FileItem,
     linePadding: Float = 32.dp.value,
     lineWidth: Float = 2.dp.value,
