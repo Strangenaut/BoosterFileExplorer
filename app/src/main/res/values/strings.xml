@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application name -->
+    <string name="app_name">Booster File Explorer</string>
+
+    <!-- Storage -->
+    <string name="storage">Storage</string>
+
+    <!-- File order -->
+    <string name="title_and_extension">Title and extension</string>
+    <string name="title">Title</string>
+    <string name="size">Size</string>
+    <string name="date">Date</string>
+    <string name="extension">Extension</string>
+    <string name="ascending">Ascending</string>
+    <string name="descending">Descending</string>
+
+    <!-- ContentDescription -->
+    <string name="sort">Sort</string>
+    <string name="back">Back</string>
+    <string name="share">Share</string>
+
+    <!-- Additional information -->
+    <string name="files_changed">Files (%1$d) were changed in this folder</string>
+    <string name="empty">Empty</string>
+</resources>

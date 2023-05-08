@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Application name -->
+    <string name="app_name">Booster File Explorer</string>
+
+    <string name="storage">Хранилище</string>
+
+    <!-- File order -->
+    <string name="title_and_extension">Имя и тип</string>
+    <string name="title">Имя</string>
+    <string name="size">Размер</string>
+    <string name="date">Дата создания</string>
+    <string name="extension">Тип</string>
+    <string name="ascending">По возрастанию</string>
+    <string name="descending">По убыванию</string>
+
+    <!-- ContentDescription -->
+    <string name="sort">Сортировка</string>
+    <string name="back">Назад</string>
+    <string name="share">Поделиться</string>
+
+    <!-- Additional information -->
+    <string name="files_changed">Файлы (%1$d) были изменены в этой папке</string>
+    <string name="empty">Пусто</string>
+</resources>
