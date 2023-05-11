@@ -128,21 +128,20 @@ class FilesListViewModel @Inject constructor(
                     )
                 }
             }
+            is FileListEvent.GetFileHashInfoList -> {
+                viewModelScope.launch(Dispatchers.IO) {
+                    _state.value = _state.value.copy(
+                        previousNestedFilesHashInfoList = useCases.getFileHashInfoList()
+                    )
+                }
+            }
             is FileListEvent.UploadFileHashInfoList -> {
                 if (event.path == null) {
                     return
                 }
 
-                viewModelScope.launch {
-                    withContext(Dispatchers.IO) {
-                        _state.value = _state.value.copy(
-                            previousNestedFilesHashInfoList = useCases.getFileHashInfoList()
-                        )
-                    }
-
-                    withContext(Dispatchers.Default) {
-                        useCases.insertFileHashInfoList(event.path)
-                    }
+                viewModelScope.launch(Dispatchers.Default) {
+                    useCases.insertFileHashInfoList(event.path)
                 }
             }
             is FileListEvent.CompareFiles -> {

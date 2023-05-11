@@ -33,6 +33,7 @@ class MainActivity : ComponentActivity() {
                         val path = Environment.getExternalStorageDirectory().absolutePath
                         viewModel.onEvent(FileListEvent.OpenFile(path, this))
                         viewModel.onEvent(FileListEvent.Order(viewModel.state.value.fileOrder))
+                        viewModel.onEvent(FileListEvent.GetFileHashInfoList)
                         viewModel.onEvent(FileListEvent.UploadFileHashInfoList(path))
                         viewModel.onEvent(FileListEvent.CompareFiles)
                     }
