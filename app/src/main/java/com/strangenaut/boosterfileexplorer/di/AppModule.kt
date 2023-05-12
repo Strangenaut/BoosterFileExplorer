@@ -18,7 +18,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteDatabase(app: Application): FileDatabase {
+    fun provideFileDatabase(app: Application): FileDatabase {
         return Room.databaseBuilder(
             app,
             FileDatabase::class.java,
@@ -34,7 +34,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNoteUseCases(repository: FileRepository): FileUseCases {
+    fun provideFileUseCases(repository: FileRepository): FileUseCases {
         return FileUseCases(
             getNestedFileItems = GetNestedFileItems(),
             orderFiles = OrderFiles(),
