@@ -6,7 +6,7 @@ import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.FileOr
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.OrderType
 
 data class FileListState (
-    val currentFile: FileItem = FileItem(path = "", iconId = null),
+    val currentFile: FileItem = FileItem(path = ""),
     val nestedFiles: List<FileItem> = listOf(),
     val previousNestedFilesHashInfoList: List<FileHashInfo> = listOf(),
     val fileOrder: FileOrder = FileOrder.TitleAndExtension(OrderType.Ascending),

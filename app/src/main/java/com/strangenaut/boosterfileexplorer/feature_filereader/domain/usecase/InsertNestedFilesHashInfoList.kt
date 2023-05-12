@@ -4,7 +4,7 @@ import com.strangenaut.boosterfileexplorer.feature_filereader.data.model.FileHas
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.repository.FileRepository
 import java.io.File
 
-class InsertFileHashInfoList(
+class InsertNestedFilesHashInfoList(
     private val repository: FileRepository
 ) {
 

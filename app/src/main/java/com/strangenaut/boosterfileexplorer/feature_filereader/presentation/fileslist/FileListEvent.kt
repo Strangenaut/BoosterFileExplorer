@@ -8,7 +8,7 @@ sealed class FileListEvent {
     data class ShareFile(val path: String?, val context: Context): FileListEvent()
     data class Order(val fileOrder: FileOrder): FileListEvent()
     object GetFileHashInfoList: FileListEvent()
-    data class UploadFileHashInfoList(val path: String?): FileListEvent()
+    data class InsertNestedFilesHashInfoList(val path: String?): FileListEvent()
     object CompareFiles: FileListEvent()
     object ToggleOrderSection: FileListEvent()
 }

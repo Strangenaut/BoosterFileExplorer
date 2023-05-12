@@ -10,15 +10,11 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.strangenaut.boosterfileexplorer.BuildConfig
-import com.strangenaut.boosterfileexplorer.R
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileItem
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase.FileUseCases
-import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.FileOrder
-import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.OrderType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -34,97 +30,31 @@ class FilesListViewModel @Inject constructor(
     fun onEvent(event: FileListEvent) {
         when (event) {
             is FileListEvent.OpenFile -> {
-                if (event.path == null) {
-                    return
-                }
-
-                val file = File(event.path)
+                val file = File(event.path ?: return)
 
                 if (file.isFile) {
                     openFileUsingOtherApp(file, Intent.ACTION_VIEW, event.context)
                     return
                 }
 
-                val rootFileItem = buildFileItem(event.path)
-                val fileItemsList = mutableListOf<FileItem>()
-
-                File(event.path).listFiles()?.forEach {
-                    val fileItem = buildFileItem(it.absolutePath)
-                    fileItemsList.add(fileItem)
-                }
-
                 _state.value = _state.value.copy(
-                    currentFile = rootFileItem,
-                    nestedFiles = fileItemsList
+                    currentFile = FileItem(event.path),
+                    nestedFiles = useCases.getNestedFileItems(event.path)
                 )
             }
             is FileListEvent.ShareFile -> {
-                if (event.path == null) {
-                    return
-                }
+                val file = File(event.path ?: return)
 
-                val file = File(event.path)
                 openFileUsingOtherApp(file, Intent.ACTION_SEND, event.context)
             }
             is FileListEvent.Order -> {
-                if (state.value.nestedFiles.isEmpty()) {
-                    return
-                }
-
-                val order = event.fileOrder
-                var filesList = _state.value.nestedFiles
-
-                _state.value = _state.value.copy(
-                    fileOrder = order
-                )
-
                 viewModelScope.launch(Dispatchers.Default) {
-                    filesList = when(order.orderType) {
-                        is OrderType.Ascending -> {
-                            when(order) {
-                                is FileOrder.TitleAndExtension -> filesList.sortedBy {
-                                    it.name.lowercase(Locale.ROOT)
-                                }.sortedBy {
-                                    it.extension.lowercase(Locale.ROOT)
-                                }
-                                is FileOrder.Title -> filesList.sortedBy {
-                                    it.name.lowercase(Locale.ROOT)
-                                }
-                                is FileOrder.Size -> filesList.sortedBy {
-                                    it.sizeBytes
-                                }
-                                is FileOrder.Date -> filesList.sortedBy {
-                                    it.creationDateTime
-                                }
-                                is FileOrder.Extension -> filesList.sortedBy {
-                                    it.extension.lowercase(Locale.ROOT)
-                                }
-                            }
-                        }
-                        is OrderType.Descending -> {
-                            when(order) {
-                                is FileOrder.TitleAndExtension -> filesList.sortedByDescending {
-                                    it.name.lowercase(Locale.ROOT)
-                                }.sortedByDescending {
-                                    it.extension.lowercase(Locale.ROOT)
-                                }
-                                is FileOrder.Title -> filesList.sortedByDescending {
-                                    it.name.lowercase(Locale.ROOT)
-                                }
-                                is FileOrder.Size -> filesList.sortedByDescending {
-                                    it.sizeBytes
-                                }
-                                is FileOrder.Date -> filesList.sortedByDescending {
-                                    it.creationDateTime
-                                }
-                                is FileOrder.Extension -> filesList.sortedByDescending {
-                                    it.extension.lowercase(Locale.ROOT)
-                                }
-                            }
-                        }
-                    }
                     _state.value = _state.value.copy(
-                        nestedFiles = filesList
+                        nestedFiles = useCases.orderFiles(
+                            event.fileOrder,
+                            _state.value.nestedFiles
+                        ),
+                        fileOrder = event.fileOrder
                     )
                 }
             }
@@ -135,27 +65,17 @@ class FilesListViewModel @Inject constructor(
                     )
                 }
             }
-            is FileListEvent.UploadFileHashInfoList -> {
-                if (event.path == null) {
-                    return
-                }
-
+            is FileListEvent.InsertNestedFilesHashInfoList -> {
                 viewModelScope.launch(Dispatchers.Default) {
-                    useCases.insertFileHashInfoList(event.path)
+                    useCases.insertNestedFilesHashInfoList(event.path ?: return@launch)
                 }
             }
             is FileListEvent.CompareFiles -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    for (file in _state.value.nestedFiles) {
-                        val hashInfo = _state.value.previousNestedFilesHashInfoList.find {
-                            file.path == it.path
-                        }
-
-                        if (hashInfo != null) {
-                            file.hasChangedSinceLastLaunch =
-                                file.fileHashCode != hashInfo.fileHashCode
-                        }
-                    }
+                viewModelScope.launch(Dispatchers.Default) {
+                    useCases.compareFiles(
+                        files = _state.value.nestedFiles,
+                        hashInfoList =  _state.value.previousNestedFilesHashInfoList
+                    )
                 }
             }
             is FileListEvent.ToggleOrderSection -> {
@@ -166,35 +86,6 @@ class FilesListViewModel @Inject constructor(
         }
     }
 
-    private fun buildFileItem(path: String): FileItem {
-        return FileItem(
-            path = path,
-            iconId = getFileTypeIcon(path)
-        )
-    }
-
-    private fun getFileTypeIcon(path: String): Int {
-        val file = File(path)
-
-        if (file.isDirectory) {
-            return R.drawable.folder
-        }
-
-        return when (file.extension) {
-            "png", "jpg", "jpeg", "gif", "bmp" -> R.drawable.image
-            "mp3", "wav", "ogg", "midi" -> R.drawable.audio
-            "mp4", "rmvb", "avi", "flv", "3gp" -> R.drawable.video
-            "c", ".cpp", "xml", "py", "json", "js", "php", "jsp", "html", "htm" -> R.drawable.code
-            "txt", "log" -> R.drawable.text
-            "xls", "xlsx" -> R.drawable.table
-            "doc", "docx" -> R.drawable.document
-            "pdf" -> R.drawable.pdf
-            "jar", "zip", "rar", "gz" -> R.drawable.zip
-            "apk" -> R.drawable.apk
-            else -> R.drawable.file
-        }
-    }
-
     private fun openFileUsingOtherApp(file: File, action: String, context: Context) {
         val uri = FileProvider.getUriForFile(
             Objects.requireNonNull(context),
@@ -202,12 +93,10 @@ class FilesListViewModel @Inject constructor(
             file
         )
         val mime = context.contentResolver.getType(uri)
-
         val intent = Intent()
             .setAction(action)
             .setDataAndType(uri, mime)
             .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
         val chooser = Intent.createChooser(intent, null)
 
         try {
@@ -215,6 +104,5 @@ class FilesListViewModel @Inject constructor(
         } catch (e: ActivityNotFoundException) {
             Log.e("Error: ", e.message.toString())
         }
-        return
     }
 }

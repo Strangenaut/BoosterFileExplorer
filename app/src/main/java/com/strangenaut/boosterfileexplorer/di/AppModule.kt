@@ -5,9 +5,7 @@ import androidx.room.Room
 import com.strangenaut.boosterfileexplorer.feature_filereader.data.datasource.FileDatabase
 import com.strangenaut.boosterfileexplorer.feature_filereader.data.repository.FileRepositoryImpl
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.repository.FileRepository
-import com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase.FileUseCases
-import com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase.GetFileHashInfoList
-import com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase.InsertFileHashInfoList
+import com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,8 +36,11 @@ object AppModule {
     @Singleton
     fun provideNoteUseCases(repository: FileRepository): FileUseCases {
         return FileUseCases(
+            getNestedFileItems = GetNestedFileItems(),
+            orderFiles = OrderFiles(),
+            compareFiles = CompareFiles(),
             getFileHashInfoList = GetFileHashInfoList(repository),
-            insertFileHashInfoList = InsertFileHashInfoList(repository)
+            insertNestedFilesHashInfoList = InsertNestedFilesHashInfoList(repository),
         )
     }
 }

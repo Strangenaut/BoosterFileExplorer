@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
                         viewModel.onEvent(FileListEvent.OpenFile(path, this))
                         viewModel.onEvent(FileListEvent.Order(viewModel.state.value.fileOrder))
                         viewModel.onEvent(FileListEvent.GetFileHashInfoList)
-                        viewModel.onEvent(FileListEvent.UploadFileHashInfoList(path))
+                        viewModel.onEvent(FileListEvent.InsertNestedFilesHashInfoList(path))
                         viewModel.onEvent(FileListEvent.CompareFiles)
                     }
                 )

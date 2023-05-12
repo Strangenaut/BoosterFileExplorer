@@ -1,5 +1,6 @@
 package com.strangenaut.boosterfileexplorer.feature_filereader.domain.model
 
+import com.strangenaut.boosterfileexplorer.R
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
@@ -7,11 +8,11 @@ import java.util.Date
 
 data class FileItem(
     val path: String,
-    val iconId: Int?,
     val name: String = File(path).name,
     val isDirectory: Boolean = File(path).isDirectory,
     val sizeBytes: Long = if (isDirectory) 0 else File(path).length(),
-    val extension: String = if (isDirectory)
+    val extension: String =
+        if (isDirectory)
             ""
         else if (File(path).extension != "")
             File(path).extension
@@ -50,6 +51,29 @@ data class FileItem(
 
     val fileHashCode: Int
         get() { return sizeBytes.hashCode() }
+
+    val iconId: Int
+        get() {
+            val file = File(path)
+
+            if (file.isDirectory) {
+                return R.drawable.folder
+            }
+
+            return when (file.extension) {
+                "png", "jpg", "jpeg", "gif", "bmp" -> R.drawable.image
+                "mp3", "wav", "ogg", "midi" -> R.drawable.audio
+                "mp4", "rmvb", "avi", "flv", "3gp" -> R.drawable.video
+                "c", ".cpp", "xml", "py", "json", "js", "php", "jsp", "html", "htm" -> R.drawable.code
+                "txt", "log" -> R.drawable.text
+                "xls", "xlsx" -> R.drawable.table
+                "doc", "docx" -> R.drawable.document
+                "pdf" -> R.drawable.pdf
+                "jar", "zip", "rar", "gz" -> R.drawable.zip
+                "apk" -> R.drawable.apk
+                else -> R.drawable.file
+            }
+        }
 
     enum class SizeUnit {
         B,
