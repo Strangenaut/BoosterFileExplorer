@@ -1,6 +1,6 @@
 package com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase
 
-import com.strangenaut.boosterfileexplorer.feature_filereader.data.model.FileHashInfo
+import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileHashInfo
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileItem
 
 class CompareFiles {

@@ -1,7 +1,7 @@
 package com.strangenaut.boosterfileexplorer.feature_filereader.data.repository
 
 import com.strangenaut.boosterfileexplorer.feature_filereader.data.datasource.FileDao
-import com.strangenaut.boosterfileexplorer.feature_filereader.data.model.FileHashInfo
+import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileHashInfo
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.repository.FileRepository
 
 class FileRepositoryImpl(

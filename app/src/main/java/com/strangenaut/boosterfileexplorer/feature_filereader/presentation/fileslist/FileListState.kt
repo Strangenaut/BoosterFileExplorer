@@ -1,6 +1,6 @@
 package com.strangenaut.boosterfileexplorer.feature_filereader.presentation.fileslist
 
-import com.strangenaut.boosterfileexplorer.feature_filereader.data.model.FileHashInfo
+import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileHashInfo
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileItem
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.FileOrder
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.util.OrderType
