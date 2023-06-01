@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 @Entity
 data class FileHashInfo(
     @PrimaryKey val path: String,
-    val fileHashCode: Int
+    val fileHashCode: String
 )

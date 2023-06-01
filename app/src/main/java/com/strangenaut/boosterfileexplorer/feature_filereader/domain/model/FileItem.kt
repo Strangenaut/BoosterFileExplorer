@@ -4,6 +4,7 @@ import com.strangenaut.boosterfileexplorer.R
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.attribute.BasicFileAttributes
+import java.security.MessageDigest
 import java.util.Date
 
 data class FileItem(
@@ -49,8 +50,8 @@ data class FileItem(
     val parentPath: String?
         get() { return File(path).parent }
 
-    val fileHashCode: Int
-        get() { return sizeBytes.hashCode() }
+    val fileHashCode: String
+        get() { return File(path).calculateHash() }
 
     val iconId: Int
         get() {
@@ -82,4 +83,20 @@ data class FileItem(
         GB,
         TB
     }
+}
+
+fun File.calculateHash(): String {
+    val file = File(path)
+    val md = MessageDigest.getInstance("SHA-256")
+    file.inputStream().use { input ->
+        val buffer = ByteArray(8192)
+        var bytesRead = input.read(buffer)
+
+        while (bytesRead != -1) {
+            md.update(buffer, 0, bytesRead)
+            bytesRead = input.read(buffer)
+        }
+    }
+    val hashBytes = md.digest()
+    return hashBytes.joinToString("") { "%02x".format(it) }
 }

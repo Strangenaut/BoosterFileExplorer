@@ -1,6 +1,7 @@
 package com.strangenaut.boosterfileexplorer.feature_filereader.domain.usecase
 
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.FileHashInfo
+import com.strangenaut.boosterfileexplorer.feature_filereader.domain.model.calculateHash
 import com.strangenaut.boosterfileexplorer.feature_filereader.domain.repository.FileRepository
 import java.io.File
 
@@ -15,7 +16,7 @@ class InsertNestedFilesHashInfoList(
 
         fileTree.forEach {
             if (it.isFile) {
-                val info = FileHashInfo(it.path, it.length().hashCode())
+                val info = FileHashInfo(it.path, it.calculateHash())
                 fileHashInfoList.add(info)
             }
         }
